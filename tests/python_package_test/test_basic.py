@@ -806,3 +806,12 @@ def test_set_leaf_output():
         leaf_output = bst.get_leaf_output(tree_id=0, leaf_id=leaf_id)
         bst.set_leaf_output(tree_id=0, leaf_id=leaf_id, value=leaf_output + 1)
     np.testing.assert_allclose(bst.predict(X), y_pred + 1)
+
+@pytest.mark.parametrize('categorical_feature',[[0,40],[31,40]])
+def test_category_index_exceeds_range(categorical_feature):
+    X, y = load_breast_cancer(return_X_y=True,as_frame=True)
+    with pytest.raises(
+        IndexError,
+        match=re.match("Number \d+ exceeds the range")
+        ):
+        lgb.Dataset(data=X,label=y,categorical_feature=categorical_feature).construct()

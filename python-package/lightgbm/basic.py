@@ -1814,10 +1814,13 @@ class Dataset:
             feature_dict = {}
             if feature_name is not None:
                 feature_dict = {name: i for i, name in enumerate(feature_name)}
+            feature_dict_len = len(feature_dict)
             for name in categorical_feature:
                 if isinstance(name, str) and name in feature_dict:
                     categorical_indices.add(feature_dict[name])
                 elif isinstance(name, int):
+                    if name >= feature_dict_len:
+                        raise IndexError(f"Number {name} exceeds the range")
                     categorical_indices.add(name)
                 else:
                     raise TypeError(f"Wrong type({type(name).__name__}) or unknown name({name}) in categorical_feature")
